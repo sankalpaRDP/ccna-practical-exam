@@ -1,0 +1,68 @@
+ISP>en
+ISP#conf t
+
+ISP(config)#banner motd *
+########################################################
+ This is Secure area. Please enter your Authentication. 
+######################################################## *
+
+ISP(config)#enable secret dImuthu@2025.lk
+
+ISP(config)#line console 0
+ISP(config-line)#password diMuthu@2025.lk
+ISP(config-line)#login
+ISP(config-line)#exit
+
+ISP(config)#username Admin secret dimuthu@Cisco.lk
+ISP(config)#ip domain-name cisco.lk
+ISP(config)#crypto key generate rsa
+How many bits in the modulus [512]: 1024
+ISP(config)#ip ssh version 2
+ISP(config)#line vty 0
+ISP(config-line)#exec-timeout 10
+ISP(config-line)#login local
+ISP(config-line)#exit
+
+ISP(config)#service password-encryption
+
+ISP(config)#security passwords min-length 11
+
+ISP(config)#login block-for 600 attempts 3 within 60
+
+ISP(config)#interface gigabitEthernet 0/0/0
+ISP(config-if)#description SW-08-Link
+ISP(config-if)#ip address 100.11.20.1 255.255.255.0
+ISP(config-if)#ip helper-address 172.16.0.2
+ISP(config-if)#no shutdown
+ISP(config-if)#exit
+
+ISP(config)#interface serial 0/2/1
+ISP(config-if)#description R-04-Link
+ISP(config-if)#clock rate 64000
+ISP(config-if)#ip address 100.10.20.1 255.255.255.252
+ISP(config-if)#ip helper-address 172.16.0.2
+ISP(config-if)#no shutdown
+ISP(config-if)#exit
+
+ISP(config)#router ospf 10
+ISP(config-router)#router-id 6.6.6.6
+ISP(config-router)#passive-interface gigabitEthernet 0/0/0
+ISP(config-router)#passive-interface gigabitEthernet 0/0/1
+ISP(config-router)#network 100.10.20.0 0.0.0.3 area 0
+ISP(config-router)#network 100.11.20.0 0.0.0.255 area 0
+ISP(config-router)#exit
+
+ISP(config)#ntp server 172.16.0.2
+ISP(config)#ntp server 172.16.0.2 key 1
+ISP(config)#ntp authentication-key 1 md5 dimuthu@123
+ISP(config)#ntp update-calendar
+ISP(config)#ntp trusted-key 1
+ISP(config)#service timestamps log datetime msec
+
+ISP(config)#logging 172.16.0.2
+ISP(config)#logging trap debugging
+ISP(config)#service timestamps log datetime msec
+
+ISP#copy running-config tftp
+Address or name of remote host []? 172.16.0.2
+Destination filename [ISP-confg]?

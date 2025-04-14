@@ -1,0 +1,80 @@
+R-01>en
+R-01#conf t
+
+R-01(config)#banner motd *
+########################################################
+ This is Secure area. Please enter your Authentication. 
+######################################################## *
+
+R-01(config)#enable secret dImuthu@2025.lk
+
+R-01(config)#line console 0
+R-01(config-line)#password diMuthu@2025.lk
+R-01(config-line)#login
+R-01(config-line)#exit
+
+R-01(config)#username Admin secret dimuthu@Cisco.lk
+R-01(config)#ip domain-name cisco.lk
+R-01(config)#crypto key generate rsa
+How many bits in the modulus [512]: 1024
+R-01(config)#ip ssh version 2
+R-01(config)#line vty 0
+R-01(config-line)#exec-timeout 10
+R-01(config-line)#login local
+R-01(config-line)#exit
+
+R-01(config)#service password-encryption
+
+R-01(config)#security passwords min-length 11
+
+R-01(config)#login block-for 600 attempts 3 within 60
+
+R-01(config)#interface gigabitEthernet 0/0/0
+R-01(config-if)#description SW-01-Link
+R-01(config-if)#ip address 172.16.1.1 255.255.255.0
+R-01(config-if)#ip helper-address 172.16.0.2
+R-01(config-if)#no shutdown
+
+R-01(config-if)#exit
+R-01(config)#interface gigabitEthernet 0/0/1
+R-01(config-if)#description sw-02-Link
+R-01(config-if)#ip address 172.16.4.65 255.255.255.224
+R-01(config-if)#ip helper-address 172.16.0.2
+R-01(config-if)#no shutdown
+
+R-01(config-if)#exit
+R-01(config)#interface ser
+R-01(config)#interface serial 0/1/0
+R-01(config-if)#des
+R-01(config-if)#description R-02-Link
+R-01(config-if)#ip address 172.16.4.162 255.255.255.252
+R-01(config-if)#ip help
+R-01(config-if)#ip helper-address 172.16.0.2
+R-01(config-if)#no shutdown
+R-01(config-if)#exit
+
+R-01(config)#ROUTER OSPF 10
+R-01(config-router)#router 1.1.1.1
+R-01(config-router)#pass
+R-01(config-router)#passive-interface gig
+R-01(config-router)#passive-interface gigabitEthernet 0/0/0
+R-01(config-router)#passive-interface gigabitEthernet 0/0/1
+R-01(config-router)#network 172.16.1.0 0.0.0.255 area 0
+R-01(config-router)#network 172.16.4.64 0.0.0.31 area 0
+R-01(config-router)#network 172.16.4.160 0.0.0.3 area 0
+R-01(config-router)#exit
+
+R-01(config)#ntp server 172.16.0.2
+R-01(config)#ntp server 172.16.0.2 key 1
+R-01(config)#ntp authentication-key 1 md5 dimuthu@123
+R-01(config)#ntp update-calendar
+R-01(config)#ntp trusted-key 1
+R-01(config)#service timestamps log datetime msec
+
+R-01(config)#logging 172.16.0.2
+R-01(config)#logging trap debugging
+R-01(config)#service timestamps log datetime msec
+
+R-01#copy running-config tftp
+Address or name of remote host []? 172.16.0.2
+Destination filename [R-02-confg]?

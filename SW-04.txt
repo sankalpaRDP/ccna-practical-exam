@@ -1,0 +1,30 @@
+SW-04(config)#vlan 2
+SW-04(config-vlan)#name CCNA
+SW-04(config-vlan)#exit
+SW-04(config)#vlan 3
+SW-04(config-vlan)#name CCNP
+SW-04(config-vlan)#exit
+SW-04(config)#vlan 4
+SW-04(config-vlan)#name CCIE
+SW-04(config-vlan)#exit
+
+SW-04(config)#interface range fastEthernet 0/1-5
+SW-04(config-if-range)#switchport mode access 
+SW-04(config-if-range)#SWitchport access vlan 2
+SW-04(config-if-range)#exit
+
+SW-04(config)#interface range fastEthernet 0/6-10
+SW-04(config-if-range)#switchport mode access 
+SW-04(config-if-range)#switchport access vlan 3
+SW-04(config-if-range)#exit
+
+SW-04(config)#interface range fastEthernet 0/11-15
+SW-04(config-if-range)#switchport mode access 
+SW-04(config-if-range)#switchport access vlan 4
+SW-04(config-if-range)#exit
+
+SW-04(config)#interface gigabitEthernet 0/1
+SW-04(config-if)#switchport mode trunk
+SW-04(config-if)#description VLAN-SW-04
+SW-04(config-if)#no shutdown
+SW-04(config-if)#exit

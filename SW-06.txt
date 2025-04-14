@@ -1,0 +1,9 @@
+SW-06(config)#interface range fastEthernet 0/1-4
+SW-06(config-if-range)#switchport mode access
+SW-06(config-if-range)#switchport port-security
+SW-06(config-if-range)#switchport port-security maximum 1
+SW-06(config-if-range)#switchport port-security violation shutdown
+SW-06(config-if-range)#exit
+
+SW-06(config)#interface range fastEthernet 0/3-24
+SW-06(config-if-range)#shutdown
